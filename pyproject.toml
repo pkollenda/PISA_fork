@@ -40,6 +40,7 @@ nbclient = "^0.7.2"
 shapely = "^1.8.5.post1"
 plotly = "^5.22.0"
 streamlit-plotly-events = "^0.0.6"
+pytest-mock = "^3.14.0"
 
 
 [tool.poetry.group.dev.dependencies]
