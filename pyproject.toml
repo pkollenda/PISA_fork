@@ -40,13 +40,13 @@ nbclient = "^0.7.2"
 shapely = "^1.8.5.post1"
 plotly = "^5.22.0"
 streamlit-plotly-events = "^0.0.6"
-pytest-mock = "^3.14.0"
 
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
 black = "^22.10.0"
 pytest-cov = "^6.0.0"
+pytest-mock = "^3.14.0"
 
 [build-system]
 requires = ["poetry-core"]
