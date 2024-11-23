@@ -48,14 +48,14 @@ def mock_region_gdf():
 
 class TestAdmAreaGetCountryData:
     def test_get_country_data_level_0(self, mocker, mock_country_gdf):
-        mocker.patch("gadm.GADMDownloader.get_shape_data_by_country_name", return_value=mock_country_gdf)
+        mocker.patch("layers.GADMDownloader.get_shape_data_by_country_name", return_value=mock_country_gdf)
         adm_area = AdmArea(country="Timor-Leste", level=0)
 
         assert type(adm_area.geometry) is MultiPolygon
         assert adm_area.adm_name == "Timor-Leste"
 
     def test_get_country_data_level_1(self, mocker, mock_region_gdf, capsys):
-        mocker.patch("gadm.GADMDownloader.get_shape_data_by_country_name", return_value=mock_region_gdf)
+        mocker.patch("layers.GADMDownloader.get_shape_data_by_country_name", return_value=mock_region_gdf)
         AdmArea(country="Timor-Leste", level=1)
 
         printed_output = capsys.readouterr().out.strip().split('\n')
