@@ -51,7 +51,7 @@ class TestAdmAreaGetCountryData:
         mocker.patch("layers.GADMDownloader.get_shape_data_by_country_name", return_value=mock_country_gdf)
         adm_area = AdmArea(country="Timor-Leste", level=0)
 
-        assert type(adm_area.geometry) is MultiPolygon
+        assert isinstance(adm_area.geometry, MultiPolygon)
         assert adm_area.adm_name == "Timor-Leste"
 
     def test_get_country_data_level_1(self, mocker, mock_region_gdf, capsys):
