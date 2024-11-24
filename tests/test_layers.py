@@ -40,10 +40,13 @@ class TestAdmAreaGetCountryData:
         mock_gdf = gpd.GeoDataFrame(data, crs='EPSG:4326')
 
         mocker.patch("layers.GADMDownloader.get_shape_data_by_country_name", return_value=mock_gdf)
-        AdmArea(country="Timor-Leste", level=1)
+        adm_area = AdmArea(country="Timor-Leste", level=1)
 
         printed_output = capsys.readouterr().out.strip().split('\n')
         for line_nr, line in enumerate(printed_output):
             if line.startswith("Administrative areas for level "):
                 assert printed_output[line_nr + 1] == "['Mock Region 1' 'Mock Region 2']"
                 break
+
+        assert getattr(adm_area, "geometry", None) is None
+        assert getattr(adm_area, "adm_name", None) is None
