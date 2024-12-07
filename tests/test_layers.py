@@ -78,3 +78,26 @@ class TestAdmAreaGetCountryData:
 
         assert getattr(adm_area, "geometry", None) is None
         assert getattr(adm_area, "adm_name", None) is None
+
+
+class TestAdmAreaRetrieveAdmAreaNames:
+    def test_retrieve_adm_area_names_level_0(self, mocker):
+        # Mock _get_country_data to avoid data fetching with GADMDownloader
+        mocker.patch("gpbp.layers.AdmArea._get_country_data")
+
+        adm_area = AdmArea(country="Timor-Leste", level=0)
+        assert adm_area.retrieve_adm_area_names() == ["Timor-Leste"]
+
+    def test_retrieve_adm_area_names_level_1(self, mocker):
+        data = {
+            'id': [0, 1],
+            'COUNTRY': ["Mock Country", "Mock Country"],
+            'NAME_1': ["Mock Region 1", "Mock Region 2"],
+            'geometry': [None, None],
+        }
+        mock_gdf = gpd.GeoDataFrame(data, crs='EPSG:4326')
+
+        mocker.patch("gpbp.layers.GADMDownloader.get_shape_data_by_country_name", return_value=mock_gdf)
+        adm_area = AdmArea(country="Timor-Leste", level=1)
+
+        assert adm_area.retrieve_adm_area_names() == ["Mock Region 1", "Mock Region 2"]
