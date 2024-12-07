@@ -57,7 +57,7 @@ class AdmArea:
             self.geometry = self.country_gdf.geometry.values[0]
             self.adm_name = self.country.name
 
-    def retrieve_adm_area_names(self) -> list[str]:
+    def retrieve_adm_area_names(self) -> np.array:
         """
         Return all administrative areas
 

@@ -100,4 +100,4 @@ class TestAdmAreaRetrieveAdmAreaNames:
         mocker.patch("gpbp.layers.GADMDownloader.get_shape_data_by_country_name", return_value=mock_gdf)
         adm_area = AdmArea(country="Timor-Leste", level=1)
 
-        assert adm_area.retrieve_adm_area_names() == ["Mock Region 1", "Mock Region 2"]
+        assert list(adm_area.retrieve_adm_area_names()) == ["Mock Region 1", "Mock Region 2"]
