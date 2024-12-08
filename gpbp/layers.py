@@ -6,6 +6,7 @@ import osmnx as ox
 import pandas as pd
 import pycountry
 from gadm import GADMDownloader
+from numpy.typing import NDArray
 
 from gpbp.constants import FACILITIES_SRC, POPULATION_SRC, RWI_SRC
 from gpbp.distance import population_served
@@ -59,7 +60,7 @@ class AdmArea:
             self.geometry = self.country_gdf.geometry.values[0]
             self.adm_name = self.country.name
 
-    def retrieve_adm_area_names(self) -> Union[List[str], np.array]:
+    def retrieve_adm_area_names(self) -> Union[List[str], NDArray[np.str_]]:
         """
         Return all administrative areas
 
