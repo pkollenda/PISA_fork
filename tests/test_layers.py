@@ -112,21 +112,24 @@ def adm_area(mocker, multipolygon):
     adm_area.adm_name = "Timor-Leste"
     return adm_area
 
+@pytest.fixture
+def tags():
+    return {"building": "hospital"}
+
 class TestAdmAreaGetFacilities:
-    def test_get_facilities_valid_method(self, mocker, adm_area):
+    def test_get_facilities_valid_method(self, mocker, adm_area, tags):
         mock_facilities_src = mocker.patch("gpbp.layers.FACILITIES_SRC", {"osm": mocker.Mock()})
-        tags = {"building":"hospital"}
         adm_area.get_facilities(method="osm", tags=tags)
         mock_facilities_src["osm"].assert_called_once_with(adm_area.adm_name, adm_area.geometry, tags)
 
-    def test_get_facilities_invalid_method(self, adm_area):
+    def test_get_facilities_invalid_method(self, adm_area, tags):
         with pytest.raises(Exception) as exc_info:
-            adm_area.get_facilities(method="invalid_method", tags={"building":"hospital"})
+            adm_area.get_facilities(method="invalid_method", tags=tags)
         assert "Invalid method" in str(exc_info.value)
 
-    def test_get_facilities_no_geometry(self, mocker):
+    def test_get_facilities_no_geometry(self, mocker, tags):
         mocker.patch("gpbp.layers.AdmArea._get_country_data")
         adm_area = AdmArea(country="Timor-Leste", level=0)
         with pytest.raises(Exception) as exc_info:
-            adm_area.get_facilities(method="osm", tags={"building":"hospital"})
+            adm_area.get_facilities(method="osm", tags=tags)
         assert "Geometry is not defined. Call get_adm_area()" in str(exc_info.value)
