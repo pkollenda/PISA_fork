@@ -102,3 +102,45 @@ class TestAdmAreaRetrieveAdmAreaNames:
         adm_area = AdmArea(country="Timor-Leste", level=1)
 
         assert np.array_equal(adm_area.retrieve_adm_area_names(), np.array(["Mock Region 1", "Mock Region 2"]))
+
+
+class TestAdmAreaGetAdmArea:
+    def test_get_adm_area_level_0(self, mocker):
+        mocker.patch("gpbp.layers.AdmArea._get_country_data")
+        adm_area = AdmArea(country="Timor-Leste", level=0)
+        adm_area.get_adm_area("Any Region")
+
+        assert adm_area.geometry is None
+
+    def test_get_adm_area_valid_name(self, mocker, multipolygon):
+        data = {
+            'id': [0, 1],
+            'COUNTRY': ["Mock Country", "Mock Country"],
+            'NAME_1': ["Mock Region 1", "Mock Region 2"],
+            'geometry': [multipolygon, multipolygon],
+        }
+        mock_gdf = gpd.GeoDataFrame(data, crs='EPSG:4326')
+
+        mocker.patch("gpbp.layers.GADMDownloader.get_shape_data_by_country_name", return_value=mock_gdf)
+        adm_area = AdmArea(country="Timor-Leste", level=1)
+        adm_area.get_adm_area("Mock Region 1")
+
+        assert isinstance(adm_area.geometry, MultiPolygon)
+        assert adm_area.geometry == multipolygon
+        assert adm_area.adm_name == "Mock Region 1"
+
+    def test_get_adm_area_invalid_name(self, mocker, capsys, multipolygon):
+        data = {
+            'id': [0, 1],
+            'COUNTRY': ["Mock Country", "Mock Country"],
+            'NAME_1': ["Mock Region 1", "Mock Region 2"],
+            'geometry': [multipolygon, multipolygon],
+        }
+        mock_gdf = gpd.GeoDataFrame(data, crs='EPSG:4326')
+
+        mocker.patch("gpbp.layers.GADMDownloader.get_shape_data_by_country_name", return_value=mock_gdf)
+        adm_area = AdmArea(country="Timor-Leste", level=1)
+        adm_area.get_adm_area("Invalid Region")
+
+        captured = capsys.readouterr()
+        assert "No data found for Invalid Region" in captured.out
