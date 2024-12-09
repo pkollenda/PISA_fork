@@ -100,12 +100,14 @@ class TestAdmAreaRetrieveAdmAreaNames:
 
 
 class TestAdmAreaGetAdmArea:
+    @pytest.mark.xfail(reason="adm_name and geometry not set for level 0. Refactor", strict=True)
     def test_get_adm_area_level_0(self, mocker):
         mocker.patch("gpbp.layers.AdmArea._get_country_data")
         adm_area = AdmArea(country="Timor-Leste", level=0)
-        adm_area.get_adm_area("Any Region")
+        adm_area.get_adm_area("Timor-Leste")
 
-        assert adm_area.geometry is None
+        assert adm_area.adm_name == "Timor-Leste"
+        assert adm_area.geometry is not None
 
     def test_get_adm_area_valid_name(self, mocker, mock_gdf):
         mocker.patch("gpbp.layers.GADMDownloader.get_shape_data_by_country_name", return_value=mock_gdf)
